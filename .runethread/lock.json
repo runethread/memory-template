@@ -1,13 +1,13 @@
 {
   "lock_version": 2,
   "source_repository": "runethread/core",
-  "runethread_version": "v0.8.0",
+  "runethread_version": "v0.9.0",
   "repository_format": 2,
   "schema_version": 1,
-  "contract_version": 8,
-  "contract_sha256": "1deef7fdc49d50b7ae6b54566de6c00ad78609c5a089ed0de254e38490853d5c",
+  "contract_version": 9,
+  "contract_sha256": "a51cd6d47d145b9917a88b4eb9e84a6e92898a51c1cae3960e0323121eeacfa3",
   "files_sha256": {
-    "MEMORY_PROTOCOL.md": "32a489441e9838dfbb2cafe9af7b6842e35081f07bdc535e3d5873c27ff30d3c",
+    "MEMORY_PROTOCOL.md": "f4097d342f9367a856caa50c7f29f630672a309004ab15526f5ad4d9dfe234c2",
     "docs/EXTENDING_RUNETHREAD.md": "842a8e9efbc340af52f01b240f2b1c4bd09457354c5de4f33dfbf657cb8acfce",
     "docs/INDEX_FORMAT.md": "dadcdaaf3cdf36bf61fdb7dc3f8105661b5e742dda6da4cb64fc1b8d07f3ee91",
     "docs/MEMORY_CONTENT_FORMAT.md": "d4460812373bdc6448fbb840012820197145f3384008016c749f8b9960a46745",
