@@ -22,7 +22,7 @@ This repository contains memory data and a locally vendored copy of the operatio
 - `schema/` — machine-readable memory schema.
 - `templates/` — authoring scaffolds for the eight core memory types.
 - `memories/` — canonical atomic durable memories.
-- `projects/` — canonical project state views.
+- `projects/` — non-authoritative project orientation/materialized views plus user project context; these views may lag canonical memories or authoritative project source.
 - `index/` — generated discovery acceleration; rebuildable and never the sole authority.
 - `.runethread/config.json` — repository, schema, contract, and tooling version metadata.
 - `.runethread/lock.json` — release pin and SHA-256 control-plane digests.
