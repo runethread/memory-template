@@ -1,4 +1,4 @@
-name: Migrate template to Runethread v0.9.0
+name: Export Runethread v0.9.0 template migration
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - runethread/migrate-v0.9.0
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   migrate:
@@ -55,25 +55,16 @@ jobs:
           "$(go env GOPATH)/bin/runethread" index --check .
           "$(go env GOPATH)/bin/runethread" validate .
 
-      - name: Commit only the verified migration output
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm .github/workflows/migrate-v0.9.0.yml
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          ACTUAL="$(git diff --cached --name-only "${GITHUB_SHA}^" | sort)"
-          EXPECTED="$(printf '%s\n' \
-            .github/workflows/validate.yml \
-            .runethread/config.json \
-            .runethread/lock.json \
-            MEMORY_PROTOCOL.md \
-            README.md | sort)"
-          if [ "$ACTUAL" != "$EXPECTED" ]; then
-            echo "final branch diff would not be the exact five-file migration" >&2
-            printf 'expected:\n%s\nactual:\n%s\n' "$EXPECTED" "$ACTUAL" >&2
-            exit 1
-          fi
-          git commit -m "chore: migrate memory template to Runethread v0.9.0"
-          git push origin HEAD:runethread/migrate-v0.9.0
+      - name: Export exact verified migration bytes
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: runethread-v0.9.0-template-migration
+          path: |
+            .github/workflows/validate.yml
+            .runethread/config.json
+            .runethread/lock.json
+            MEMORY_PROTOCOL.md
+            README.md
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
