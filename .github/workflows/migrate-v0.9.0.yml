@@ -1,12 +1,14 @@
-name: Export Runethread v0.9.0 template migration
+name: Apply verified Runethread v0.9.0 template migration
 
 on:
   push:
     branches:
       - runethread/migrate-v0.9.0
+    paths:
+      - .github/workflows/migrate-v0.9.0.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   migrate:
@@ -55,16 +57,27 @@ jobs:
           "$(go env GOPATH)/bin/runethread" index --check .
           "$(go env GOPATH)/bin/runethread" validate .
 
-      - name: Export exact verified migration bytes
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: runethread-v0.9.0-template-migration
-          path: |
-            .github/workflows/validate.yml
-            .runethread/config.json
-            .runethread/lock.json
-            MEMORY_PROTOCOL.md
-            README.md
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 1
+      - name: Commit verified non-workflow migration output
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .runethread/config.json .runethread/lock.json MEMORY_PROTOCOL.md README.md
+          EXPECTED="$(printf '%s\n' \
+            .runethread/config.json \
+            .runethread/lock.json \
+            MEMORY_PROTOCOL.md \
+            README.md | sort)"
+          ACTUAL="$(git diff --cached --name-only | sort)"
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "unexpected staged migration surface" >&2
+            printf 'expected:\n%s\nactual:\n%s\n' "$EXPECTED" "$ACTUAL" >&2
+            exit 1
+          fi
+          if git diff --quiet -- .github/workflows/validate.yml; then
+            echo "expected generated validate.yml to remain as the one deferred workflow-file change" >&2
+            exit 1
+          fi
+          git commit -m "chore: apply verified v0.9 template migration"
+          git push origin HEAD:runethread/migrate-v0.9.0
